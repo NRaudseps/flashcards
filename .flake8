@@ -7,7 +7,7 @@ exclude =
     .git
     __pycache__
     .virtualenv
-    .venv
+    ./venv
     node_modules
     static
     migrations
