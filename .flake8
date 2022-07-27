@@ -1,0 +1,13 @@
+[flake8]
+docstring-convention = all
+max-line-length = 120
+
+exclude =
+    # Permanent excludes
+    .git
+    __pycache__
+    .virtualenv
+    .venv
+    node_modules
+    static
+    migrations
