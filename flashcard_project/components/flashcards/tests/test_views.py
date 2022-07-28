@@ -33,7 +33,8 @@ class ViewTestCase(TestCase):
         data = {
             "question": "Hello",
             "answer": "Bonjour",
-            "box": self.box,
+            "box": self.box.id,
         }
         response = self.client.post(reverse("flashcards:create"), data=data)
         self.assertEqual(response.status_code, 302)
+        self.assertIsNotNone(FlashCard.objects.get(question="Hello"))
