@@ -42,7 +42,7 @@ def create(request: HttpRequest) -> HttpResponse:
 
 def edit(request: HttpRequest, pk: int) -> HttpResponse:
     """
-    Page for creating new flashcards.
+    Page for editing flashcards.
     """
     flashcard = get_object_or_404(FlashCard, pk=pk)
     form = FlashCardForm(instance=flashcard)
@@ -53,7 +53,7 @@ def edit(request: HttpRequest, pk: int) -> HttpResponse:
 @require_http_methods(["POST"])
 def update(request: HttpRequest) -> HttpResponse:
     """
-    Edit existing flashcard.
+    Update existing flashcard.
     """
     flashcard = get_object_or_404(FlashCard, pk=request.POST["flashcard_pk"])
 

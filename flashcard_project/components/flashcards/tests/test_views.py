@@ -27,10 +27,11 @@ class ViewTestCase(TestCase):
     )
     def test_if_get_view_exists(self, url, data):
         """Test index page 200 status code response."""
+        args = [data]
         if not data:
-            response = self.client.get(reverse(f"flashcards:{url}"))
-        else:
-            response = self.client.get(reverse(f"flashcards:{url}", args=[data]))
+            args = []
+
+        response = self.client.get(reverse(f"flashcards:{url}", args=args))
         self.assertEqual(response.status_code, 200)
 
     def test_index_page_returns_all_flashcards(self):
