@@ -8,10 +8,4 @@
         {{ flashcard.question }}
         {{ flashcard.answer }}
     {% endfor %}
-
-    <form action="{% url 'flashcards:create' %}" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit">
-    </form>
 </body>

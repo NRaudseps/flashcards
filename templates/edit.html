@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<head>
+    <title>Flashcards App</title>
+</head>
+<body>
+<h1>Create Flashcard</h1>
+<form action="{% url 'flashcards:update' %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="hidden" name="flashcard_pk" value="{{ pk }}">
+    <input type="submit">
+</form>
+</body>
