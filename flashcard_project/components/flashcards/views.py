@@ -62,3 +62,12 @@ def update(request: HttpRequest) -> HttpResponse:
         form.save()
 
     return redirect("flashcards:index")
+
+
+def box(request: HttpRequest, pk: int) -> HttpResponse:
+    """
+    Page for viewing flashcards in a box.
+    """
+    latest_flashcard = FlashCard.objects.filter(box_id=pk).latest("pub_date")
+    context = {"flashcard": latest_flashcard}
+    return render(request, template_name="box.html", context=context)

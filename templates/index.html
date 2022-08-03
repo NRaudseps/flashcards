@@ -8,4 +8,8 @@
         {{ flashcard.question }}
         {{ flashcard.answer }}
     {% endfor %}
+    <br>
+    {% for box in boxes %}
+        {{ box.name }}
+    {% endfor %}
 </body>

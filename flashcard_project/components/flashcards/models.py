@@ -19,3 +19,4 @@ class FlashCard(models.Model):
     question = models.CharField(max_length=1028)
     answer = models.CharField(max_length=1028)
     box = models.ForeignKey("Box", on_delete=models.CASCADE)
+    pub_date = models.DateTimeField(auto_now_add=True)

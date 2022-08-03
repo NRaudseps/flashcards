@@ -23,6 +23,7 @@ class ViewTestCase(TestCase):
             ("index", None),
             ("new", None),
             ("edit", 1),
+            ("box", 1),
         ]
     )
     def test_if_get_view_exists(self, url, data):
@@ -65,3 +66,11 @@ class ViewTestCase(TestCase):
 
         self.flashcard.refresh_from_db()
         self.assertEqual(self.flashcard.answer, "Salut")
+
+    def test_box_shows_latest_flashcard(self):
+        FlashCard.objects.create(question="Hello", answer="Salut", box=self.box)
+
+        response = self.client.post(reverse("flashcards:box", args=[self.box.id]))
+        self.assertEqual(
+            response.context["flashcard"], FlashCard.objects.latest("pub_date")
+        )
