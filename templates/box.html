@@ -5,4 +5,12 @@
 <body>
 {{ flashcard.question }}
 {{ flashcard.answer }}
+{% if flashcard %}
+    <form action="{% url 'flashcards:quiz' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="flashcard_pk" value="{{ flashcard.id }}">
+        <input type="submit" name="answer" value="True" placeholder="I know">
+        <input type="submit" name="answer" value="False" placeholder="I don't know">
+    </form>
+{% endif %}
 </body>

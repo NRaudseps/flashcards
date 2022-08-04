@@ -1,6 +1,7 @@
 # DJANGO
 from django.http import HttpRequest
 from django.shortcuts import HttpResponse, get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 # THIS PROJECT
@@ -68,6 +69,26 @@ def box(request: HttpRequest, pk: int) -> HttpResponse:
     """
     Page for viewing flashcards in a box.
     """
-    latest_flashcard = FlashCard.objects.filter(box_id=pk).latest("pub_date")
+    try:
+        latest_flashcard = FlashCard.objects.filter(box_id=pk).latest("pub_date")
+    except FlashCard.DoesNotExist:
+        latest_flashcard = None
     context = {"flashcard": latest_flashcard}
     return render(request, template_name="box.html", context=context)
+
+
+@require_http_methods(["POST"])
+def quiz(request: HttpRequest) -> HttpResponse:
+    """
+    Move flashcards to other boxes when user answers.
+    """
+    answer = request.POST["answer"]
+    flashcard = FlashCard.objects.get(pk=request.POST["flashcard_pk"])
+    original_box_id = flashcard.box_id
+    if answer == "True":
+        flashcard.box = Box.objects.get(pk=flashcard.box_id + 1)
+    else:
+        flashcard.box = Box.objects.get(pk=1)
+    flashcard.save()
+
+    return redirect(reverse("flashcards:box", args=[original_box_id]))
