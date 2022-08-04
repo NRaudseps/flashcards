@@ -1,12 +1,6 @@
 # DJANGO
 from django.http import HttpRequest
-from django.shortcuts import (
-    HttpResponse,
-    get_list_or_404,
-    get_object_or_404,
-    redirect,
-    render,
-)
+from django.shortcuts import HttpResponse, get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
@@ -72,7 +66,7 @@ def box(request: HttpRequest, pk: int) -> HttpResponse:
     """
     Page for viewing flashcards in a box.
     """
-    flashcards = get_list_or_404(FlashCard, box=pk)
+    flashcards = FlashCard.objects.filter(box=pk)
 
     context = {"flashcards": flashcards, "box_num": pk}
     return render(request, template_name="pages/box.html", context=context)

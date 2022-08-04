@@ -16,6 +16,7 @@ class ViewTestCase(TestCase):
         self.flashcard = FlashCard.objects.create(
             question="My name is...", answer="Je m'appelle...", box=1
         )
+        self.headers = {"HTTP_REFERER": "/"}
 
     @parameterized.expand(
         [
@@ -48,7 +49,9 @@ class ViewTestCase(TestCase):
             "answer": "Bonjour",
             "box": 1,
         }
-        response = self.client.post(reverse("flashcards:create"), data=data)
+        response = self.client.post(
+            reverse("flashcards:create"), data=data, **self.headers
+        )
         self.assertEqual(response.status_code, 302)
         self.assertIsNotNone(FlashCard.objects.get(question="Hello"))
 
@@ -60,7 +63,9 @@ class ViewTestCase(TestCase):
             "box": 1,
             "flashcard_pk": self.flashcard.id,
         }
-        response = self.client.post(reverse("flashcards:update"), data=data)
+        response = self.client.post(
+            reverse("flashcards:update"), data=data, **self.headers
+        )
         self.assertEqual(response.status_code, 302)
 
         self.flashcard.refresh_from_db()
