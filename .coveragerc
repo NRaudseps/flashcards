@@ -2,6 +2,7 @@
 omit =
     manage.py
     */migrations/*
+    */tests/*
     .venv*
     */admin.py
     flashcard_project/settings.py

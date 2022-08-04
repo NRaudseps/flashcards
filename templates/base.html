@@ -1,4 +1,5 @@
-{% load static %}
+{% load project_tags %}
+{% load static humanize project_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,9 +8,26 @@
     <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}">
 </head>
 <body>
-    <div class="sidebar"></div>
-    <div class="content">
-        {% block content %}{% endblock %}
+<h1>Flashcards App</h1>
+<div class="navbar">
+    <div class="nav-item all-cards">
+        <a href="{% url 'flashcards:index' %}">
+            <img src="{% static 'assets/img/icons/cards.svg' %}" alt="cards" height="18" width="18">
+            All Cards
+        </a>
     </div>
+    {% for box_id in "12345"|make_list %}
+        <div class="nav-item box">
+            <a href="{% url 'flashcards:box' box_id %}">
+                <img src="{% static 'assets/img/icons/folder.svg' %}" alt="folder" height="18" width="18">
+                {{ box_id|ordinal }} Box
+                <span class="box-number">{% number_of_cards box_id %}</span>
+            </a>
+        </div>
+    {% endfor %}
+</div>
+<div class="content">
+    {% block content %}{% endblock %}
+</div>
 </body>
 </html>

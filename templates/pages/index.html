@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Flashcards App</h1>
     {% for flashcard in flashcards %}
         {{ flashcard.question }}
         {{ flashcard.answer }}
