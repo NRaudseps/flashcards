@@ -1,6 +1,7 @@
 # DJANGO
 from django.http import HttpRequest
-from django.shortcuts import HttpResponse, get_object_or_404, redirect, render
+from django.shortcuts import HttpResponse, get_object_or_404, redirect, render, \
+    get_list_or_404
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
@@ -13,9 +14,7 @@ def index(request: HttpRequest) -> HttpResponse:
     """
     Main index page for flashcards.
     """
-    context = {
-        "flashcards": FlashCard.objects.all(),
-    }
+    context = {"flashcards": FlashCard.objects.all()}
     return render(request, template_name="pages/index.html", context=context)
 
 
@@ -37,7 +36,7 @@ def create(request: HttpRequest) -> HttpResponse:
     if form.is_valid():
         form.save()
 
-    return redirect("flashcards:new")
+    return redirect(request.META.get("HTTP_REFERER"))
 
 
 def edit(request: HttpRequest, pk: int) -> HttpResponse:
@@ -61,14 +60,14 @@ def update(request: HttpRequest) -> HttpResponse:
     if form.is_valid():
         form.save()
 
-    return redirect("flashcards:index")
+    return redirect(request.META.get("HTTP_REFERER"))
 
 
 def box(request: HttpRequest, pk: int) -> HttpResponse:
     """
     Page for viewing flashcards in a box.
     """
-    flashcards = FlashCard.objects.filter(box=pk)
+    flashcards = get_list_or_404(FlashCard, box=pk)
 
     context = {"flashcards": flashcards, "box_num": pk}
     return render(request, template_name="pages/box.html", context=context)
@@ -80,12 +79,8 @@ def quiz(request: HttpRequest) -> HttpResponse:
     Move flashcards to other boxes when user answers.
     """
     answer = request.POST["answer"]
-    flashcard = FlashCard.objects.get(pk=request.POST["flashcard_pk"])
+    flashcard = get_object_or_404(FlashCard, pk=request.POST["flashcard_pk"])
     original_box_number = flashcard.box
-    if answer == "True":
-        flashcard.box += 1
-    else:
-        flashcard.box = 1
-    flashcard.save()
+    flashcard.move(solved=True) if answer == "True" else flashcard.move(solved=False)
 
     return redirect(reverse("flashcards:box", args=[original_box_number]))

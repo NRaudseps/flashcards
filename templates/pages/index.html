@@ -6,10 +6,9 @@
     <h2>All Cards</h2>
     <a href="{% url 'flashcards:new' %}">Create new card</a>
     {% for box_id in "12345"|make_list %}
-        {% number_of_cards box_id as num %}
-        {% if num != 0 %}
+        {% ifchanged %}
             <h3>{{ box_id|ordinal }} Box</h3>
-        {% endif %}
+        {% endifchanged %}
         {% for flashcard in flashcards %}
             {% if flashcard.box == box_id|to_int %}
                 <div class="index-card">

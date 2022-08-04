@@ -4,11 +4,14 @@
 
 {% block content %}
     <h2>{{ box_num|ordinal }} Box</h2>
-    <p>{{ flashcards|length }} Cards left in box.</p>
+    <p>{{ flashcards|length }} Card{{ flashcards|pluralize }} left in box.</p>
     {% if flashcards %}
-        {% with flashcard=flashcards|first %}
+        {% with flashcard=flashcards|random %}
             {{ flashcard.question }}
-            {{ flashcard.answer }}
+            <details>
+                <summary>Reveal Answer</summary>
+                <p>{{ flashcard.answer }}</p>
+            </details>
             <form action="{% url 'flashcards:quiz' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="flashcard_pk" value="{{ flashcard.id }}">

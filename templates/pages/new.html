@@ -4,7 +4,7 @@
     <h1>Create New Card</h1>
     <form action="{% url 'flashcards:create' %}" method="post">
         {% csrf_token %}
-        {{ form }}
+        {{ form.as_p }}
         <input type="submit" value="Save Card">
     </form>
     <a href="{% url 'flashcards:index' %}">Cancel</a>

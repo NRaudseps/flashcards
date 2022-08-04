@@ -4,7 +4,7 @@
     <h1>Create Flashcard</h1>
     <form action="{% url 'flashcards:update' %}" method="post">
         {% csrf_token %}
-        {{ form }}
+        {{ form.as_p }}
         <input type="hidden" name="flashcard_pk" value="{{ pk }}">
         <input type="submit">
     </form>
