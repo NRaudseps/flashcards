@@ -1,8 +1,6 @@
-<!DOCTYPE html>
-<head>
-    <title>Flashcards App</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block content %}
     <h1>Flashcards App</h1>
     {% for flashcard in flashcards %}
         {{ flashcard.question }}
@@ -12,4 +10,4 @@
     {% for box in boxes %}
         {{ box.name }}
     {% endfor %}
-</body>
+{% endblock %}

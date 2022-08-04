@@ -1,5 +1,7 @@
 [run]
 omit =
     manage.py
-    settings.py
     */migrations/*
+    .venv*
+    */admin.py
+    flashcard_project/settings.py
