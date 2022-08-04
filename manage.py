@@ -2,8 +2,6 @@
 """Django's command-line utility for administrative tasks."""
 # STDLIB
 import os
-
-# THIRDPARTY
 import sys
 
 
