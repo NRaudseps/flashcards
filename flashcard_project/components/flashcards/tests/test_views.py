@@ -77,6 +77,7 @@ class ViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_flashcard_quiz_view_1(self):
+        """Test flashcard quiz view when answer was correct."""
         data = {
             "flashcard_pk": self.flashcard.id,
             "answer": True,
@@ -89,6 +90,7 @@ class ViewTestCase(TestCase):
         self.assertEqual(self.flashcard.box, 2)
 
     def test_flashcard_quiz_view_2(self):
+        """Test flashcard quiz view when answer wasn't correct."""
         self.flashcard.box = 2
         self.flashcard.save()
         data = {
