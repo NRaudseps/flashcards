@@ -6,7 +6,7 @@ from django.views.decorators.http import require_http_methods
 
 # THIS PROJECT
 from flashcard_project.components.flashcards.forms import FlashCardForm
-from flashcard_project.components.flashcards.models import Box, FlashCard
+from flashcard_project.components.flashcards.models import FlashCard
 
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -15,9 +15,8 @@ def index(request: HttpRequest) -> HttpResponse:
     """
     context = {
         "flashcards": FlashCard.objects.all(),
-        "boxes": Box.objects.all(),
     }
-    return render(request, template_name="index.html", context=context)
+    return render(request, template_name="pages/index.html", context=context)
 
 
 def new(request: HttpRequest) -> HttpResponse:
@@ -26,7 +25,7 @@ def new(request: HttpRequest) -> HttpResponse:
     """
     form = FlashCardForm()
     context = {"form": form}
-    return render(request, template_name="new.html", context=context)
+    return render(request, template_name="pages/new.html", context=context)
 
 
 @require_http_methods(["POST"])
@@ -48,7 +47,7 @@ def edit(request: HttpRequest, pk: int) -> HttpResponse:
     flashcard = get_object_or_404(FlashCard, pk=pk)
     form = FlashCardForm(instance=flashcard)
     context = {"form": form, "pk": pk}
-    return render(request, template_name="edit.html", context=context)
+    return render(request, template_name="pages/edit.html", context=context)
 
 
 @require_http_methods(["POST"])
@@ -70,11 +69,11 @@ def box(request: HttpRequest, pk: int) -> HttpResponse:
     Page for viewing flashcards in a box.
     """
     try:
-        latest_flashcard = FlashCard.objects.filter(box_id=pk).latest("pub_date")
+        latest_flashcard = FlashCard.objects.filter(box=pk).latest("pub_date")
     except FlashCard.DoesNotExist:
         latest_flashcard = None
     context = {"flashcard": latest_flashcard}
-    return render(request, template_name="box.html", context=context)
+    return render(request, template_name="pages/box.html", context=context)
 
 
 @require_http_methods(["POST"])
@@ -84,11 +83,11 @@ def quiz(request: HttpRequest) -> HttpResponse:
     """
     answer = request.POST["answer"]
     flashcard = FlashCard.objects.get(pk=request.POST["flashcard_pk"])
-    original_box_id = flashcard.box_id
+    original_box_number = flashcard.box
     if answer == "True":
-        flashcard.box = Box.objects.get(pk=flashcard.box_id + 1)
+        flashcard.box += 1
     else:
-        flashcard.box = Box.objects.get(pk=1)
+        flashcard.box = 1
     flashcard.save()
 
-    return redirect(reverse("flashcards:box", args=[original_box_id]))
+    return redirect(reverse("flashcards:box", args=[original_box_number]))

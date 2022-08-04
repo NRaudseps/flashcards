@@ -4,7 +4,7 @@ from django.test.client import Client
 from django.urls import reverse
 
 # THIS PROJECT
-from flashcard_project.components.flashcards.models import Box, FlashCard
+from flashcard_project.components.flashcards.models import FlashCard
 
 # THIRDPARTY
 from parameterized import parameterized
@@ -13,9 +13,8 @@ from parameterized import parameterized
 class ViewTestCase(TestCase):
     def setUp(self) -> None:
         self.client = Client()
-        self.box = Box.objects.create(name="Box 1")
         self.flashcard = FlashCard.objects.create(
-            question="My name is...", answer="Je m'appelle...", box=self.box
+            question="My name is...", answer="Je m'appelle...", box=1
         )
 
     @parameterized.expand(
@@ -47,7 +46,7 @@ class ViewTestCase(TestCase):
         data = {
             "question": "Hello",
             "answer": "Bonjour",
-            "box": self.box.id,
+            "box": 1,
         }
         response = self.client.post(reverse("flashcards:create"), data=data)
         self.assertEqual(response.status_code, 302)
@@ -58,7 +57,7 @@ class ViewTestCase(TestCase):
         data = {
             "question": "Hello",
             "answer": "Salut",
-            "box": self.box.id,
+            "box": 1,
             "flashcard_pk": self.flashcard.id,
         }
         response = self.client.post(reverse("flashcards:update"), data=data)
@@ -69,21 +68,19 @@ class ViewTestCase(TestCase):
 
     def test_box_shows_latest_flashcard(self):
         """Test box shows the latest flashcard."""
-        FlashCard.objects.create(question="Hello", answer="Salut", box=self.box)
+        FlashCard.objects.create(question="Hello", answer="Salut", box=1)
 
-        response = self.client.post(reverse("flashcards:box", args=[self.box.id]))
+        response = self.client.post(reverse("flashcards:box", args=[1]))
         self.assertEqual(
             response.context["flashcard"], FlashCard.objects.latest("pub_date")
         )
 
     def test_box_view_works_when_no_flashcards(self):
         """Test if box view works when no flashcards are in a box."""
-        box_2 = Box.objects.create(name="Box 2")
-        response = self.client.post(reverse("flashcards:box", args=[box_2.id]))
+        response = self.client.post(reverse("flashcards:box", args=[2]))
         self.assertEqual(response.status_code, 200)
 
     def test_flashcard_quiz_view_1(self):
-        box_2 = Box.objects.create(name="Box 2")
         data = {
             "flashcard_pk": self.flashcard.id,
             "answer": True,
@@ -92,13 +89,12 @@ class ViewTestCase(TestCase):
         response = self.client.post(reverse("flashcards:quiz"), data=data)
         self.assertEqual(response.status_code, 302)
 
-        self.box.refresh_from_db()
-        box_2.refresh_from_db()
-        self.assertNotIn(self.flashcard, self.box.flashcard_set.all())
-        self.assertIn(self.flashcard, box_2.flashcard_set.all())
+        self.flashcard.refresh_from_db()
+        self.assertEqual(self.flashcard.box, 2)
 
     def test_flashcard_quiz_view_2(self):
-        box_2 = Box.objects.create(name="Box 2")
+        self.flashcard.box = 2
+        self.flashcard.save()
         data = {
             "flashcard_pk": self.flashcard.id,
             "answer": False,
@@ -107,7 +103,5 @@ class ViewTestCase(TestCase):
         response = self.client.post(reverse("flashcards:quiz"), data=data)
         self.assertEqual(response.status_code, 302)
 
-        self.box.refresh_from_db()
-        box_2.refresh_from_db()
-        self.assertIn(self.flashcard, self.box.flashcard_set.all())
-        self.assertNotIn(self.flashcard, box_2.flashcard_set.all())
+        self.flashcard.refresh_from_db()
+        self.assertEqual(self.flashcard.box, 1)
