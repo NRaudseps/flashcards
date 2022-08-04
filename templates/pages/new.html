@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Create Flashcard</h1>
+    <h1>Create New Card</h1>
     <form action="{% url 'flashcards:create' %}" method="post">
         {% csrf_token %}
         {{ form }}
-        <input type="submit">
+        <input type="submit" value="Save Card">
     </form>
+    <a href="{% url 'flashcards:index' %}">Cancel</a>
 {% endblock %}

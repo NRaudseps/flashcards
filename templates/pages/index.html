@@ -1,9 +1,24 @@
 {% extends "base.html" %}
 
+{% load humanize project_tags %}
+
 {% block content %}
-    {% for flashcard in flashcards %}
-        {{ flashcard.question }}
-        {{ flashcard.answer }}
+    <h2>All Cards</h2>
+    <a href="{% url 'flashcards:new' %}">Create new card</a>
+    {% for box_id in "12345"|make_list %}
+        {% number_of_cards box_id as num %}
+        {% if num != 0 %}
+            <h3>{{ box_id|ordinal }} Box</h3>
+        {% endif %}
+        {% for flashcard in flashcards %}
+            {% if flashcard.box == box_id|to_int %}
+                <div class="index-card">
+                    <h4>{{ flashcard.question }}</h4>
+                    <p>{{ flashcard.answer }}</p>
+                    <a href="{% url 'flashcards:edit' flashcard.id %}">Edit Card</a>
+                </div>
+            {% endif %}
+        {% endfor %}
     {% endfor %}
     <br>
     {% for box in boxes %}

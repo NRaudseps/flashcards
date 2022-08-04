@@ -37,7 +37,7 @@ def create(request: HttpRequest) -> HttpResponse:
     if form.is_valid():
         form.save()
 
-    return redirect("flashcards:index")
+    return redirect("flashcards:new")
 
 
 def edit(request: HttpRequest, pk: int) -> HttpResponse:
@@ -68,11 +68,9 @@ def box(request: HttpRequest, pk: int) -> HttpResponse:
     """
     Page for viewing flashcards in a box.
     """
-    try:
-        latest_flashcard = FlashCard.objects.filter(box=pk).latest("pub_date")
-    except FlashCard.DoesNotExist:
-        latest_flashcard = None
-    context = {"flashcard": latest_flashcard}
+    flashcards = FlashCard.objects.filter(box=pk)
+
+    context = {"flashcards": flashcards, "box_num": pk}
     return render(request, template_name="pages/box.html", context=context)
 
 

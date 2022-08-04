@@ -34,3 +34,12 @@ a {
     padding: 4px;
     border-radius: 2px;
 }
+
+.index-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffbf00;
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 500px;
+}

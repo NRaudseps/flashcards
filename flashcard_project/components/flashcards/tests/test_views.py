@@ -66,15 +66,6 @@ class ViewTestCase(TestCase):
         self.flashcard.refresh_from_db()
         self.assertEqual(self.flashcard.answer, "Salut")
 
-    def test_box_shows_latest_flashcard(self):
-        """Test box shows the latest flashcard."""
-        FlashCard.objects.create(question="Hello", answer="Salut", box=1)
-
-        response = self.client.post(reverse("flashcards:box", args=[1]))
-        self.assertEqual(
-            response.context["flashcard"], FlashCard.objects.latest("pub_date")
-        )
-
     def test_box_view_works_when_no_flashcards(self):
         """Test if box view works when no flashcards are in a box."""
         response = self.client.post(reverse("flashcards:box", args=[2]))

@@ -12,3 +12,7 @@ class TemplateTagTestCase(TestCase):
             FlashCard.objects.create(question="Yes", answer="Oui", box=1)
 
         self.assertEqual(project_tags.number_of_cards(1), 5)
+
+    def test_to_int(self):
+        num = "5"
+        self.assertEqual(project_tags.to_int(num), 5)
